@@ -3,23 +3,28 @@ let button = document.querySelector('.btn');
 let zipInput = document.querySelector('#zip-input');
 const dayTitles = document.querySelectorAll('.day-title');
 const dayCardText = document.querySelectorAll('.card-text');
-console.log(dayTitles);
+let zipCode = '35233';
 
+getWeatherData();
 
 button.addEventListener('click', function () {
 
+    zipCode = zipInput.value;
+    getWeatherData();
+})
+
+
+
+function getWeatherData() {
     let xhr = new XMLHttpRequest();
 
-    let zipCode = zipInput.value;
-
     xhr.open('GET', `https://api.openweathermap.org/data/2.5/forecast?zip=${zipCode}&appid=50b57001e47a35c46af179f3104b097e`, true);
-
 
     xhr.onload = function () {
         let response = JSON.parse(xhr.responseText);
 
         let city = response.city.name;
-        // document.querySelector('h3').innerText = `${city} 5 Day Forecast`;
+        document.querySelector('h4').innerText = `Five Day Weather Forecast for ${city}`;
 
         let allDays = [[], [], [], [], []];
 
@@ -30,6 +35,7 @@ button.addEventListener('click', function () {
             day3: {},
             day4: {}
         }
+    
 
         namesOfDays = {
             0: 'Sunday',
@@ -77,21 +83,22 @@ button.addEventListener('click', function () {
             dayTitles[i].textContent = dataForOutput[`day${i}`].dayText;
             let tempHigh = dataForOutput[`day${i}`].maxTemp;
             let tempLow = dataForOutput[`day${i}`].minTemp;
+            let weatherType = dataForOutput[`day${i}`].weatherDescription;
             dayCardText[i].innerHTML = `
-                <ul>
-                    <li>High: ${tempHigh}</li>
-                    <li>Low:  ${tempLow}</li> 
-                </ul>
+            <p class='text-center text-capitalize font-weight-bold'>${weatherType}</p>
+            <ul>
+                <li>High: ${tempHigh} 	&degF</li>
+                <li>Low:  ${tempLow} &degF</li> 
+            </ul>
             `
-            }
-        
+        }
 
-
+        console.log(dataForOutput);
     }
 
     xhr.send();
+}
 
-})
 
 
 
